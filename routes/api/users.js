@@ -61,7 +61,7 @@ router.post("/register",(req,res) =>{
 				
 				uploadFile(oldpath,newpath);
 				
-				let path = './?image=' + data.username + '-pp.jpg';
+				let path = './?image=' + data.username + '-profile_picture.jpg';
 				
 				newUser.profile_picture = path;
 				newUser.password = hashPassword(newUser.password);
