@@ -122,8 +122,10 @@ router.put("/edit-profile",(req,res) =>{
 	}
 	
     User.findOne({email: req.cookies.email})
-		.then(user => {            
-            for (var key in req.body){
+		.then(user => {   
+			let isEmailChange = false;         
+			
+			for (var key in req.body){
                 if (!isEmpty(user[key]) && (key != 'old_password')){
                     if(key == 'password'){						
 						if (compareHashPassword(req.body.old_password, user.password)){
@@ -140,6 +142,9 @@ router.put("/edit-profile",(req,res) =>{
 						user.profile_picture = imagePath;
 
 						user[key] = req.body[key];
+					} else if (key == 'email') {
+						user[key] = req.body[key];
+						isEmailChange = true;
                     } else {
                         user[key] = req.body[key];
                     }
@@ -156,6 +161,9 @@ router.put("/edit-profile",(req,res) =>{
 				uploadFile(oldpath,newpath);
 			}
 			
+			if (isEmailChange) {
+				return res.cookie("email", user.email).json({user: user});
+			}
             return res.json({user: user});
         })
 });
