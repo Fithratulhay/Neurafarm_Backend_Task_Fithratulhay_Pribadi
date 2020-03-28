@@ -31,6 +31,12 @@ const uploadFile = function(oldpath, newpath){
 	});
 }
 
+const renameFile = function(oldpath, newpath){
+	fs.rename(oldpath, newpath, function(err){
+        if (err) throw err;
+	});
+}
+
 router.post("/register",(req,res) =>{
 	const {errorsRegister,isValidRegister} = validateRegisterInput(req);
 	
@@ -44,7 +50,7 @@ router.post("/register",(req,res) =>{
     ]})
         .then(user => {
             if(user){
-                return res.status(400).json({message : 'Username atau Alamat email sudah digunakan'});
+                return res.status(400).json({message : 'username or email address already used'});
             }else{
                 const newUser = new User({
                     username : req.body.username,
@@ -61,7 +67,7 @@ router.post("/register",(req,res) =>{
 				
 				uploadFile(oldpath,newpath);
 				
-				let path = './?image=' + data.username + '-profile_picture.jpg';
+				let path = './?image=' + newUser.username + '-profile_picture.jpg';
 				
 				newUser.profile_picture = path;
 				newUser.password = hashPassword(newUser.password);
@@ -75,6 +81,12 @@ router.post("/register",(req,res) =>{
 });
 
 router.post("/login",(req,res) =>{
+	const {errorsSession,isValidSession} = validateSession(req.cookies);
+	
+    if(isValidSession){
+		return res.status(400).json({message : "you already log in"});
+	}
+
 	const {errorsLogin,isValidLogin} = validateLoginInput(req);
 
     if(!isValidLogin){
@@ -86,12 +98,12 @@ router.post("/login",(req,res) =>{
             if(user){
 				let result = compareHashPassword(req.body.password, user.password);
 				if(result){
-					return res.cookie("email", user.email).json({message: 'Login berhasil'});
+					return res.cookie("email", user.email).json({message: 'Login success'});
 				}else{
-					return res.status(400).json({message : 'alamat email atau password yang dimasukkan salah'});
+					return res.status(400).json({message : 'email address or password not valid'});
 				}
             }else{
-                return res.status(400).json({message : 'tidak ada alamat email yang sesuai'});
+                return res.status(400).json({message : 'no account with this email address'});
             }
         })
 });
@@ -117,8 +129,17 @@ router.put("/edit-profile",(req,res) =>{
 						if (compareHashPassword(req.body.old_password, user.password)){
 							user[key] = hashPassword(req.body.password);
 						} else {
-							return res.status(400).json({message : "old_password tidak sesuai, tidak bisa mengganti password"});
+							return res.status(400).json({message : "old_password not valid, can't change password"});
 						}
+					} else if (key == 'username') {
+						let oldpath = './uploads/' + user.username + '-profile_picture.jpg';
+						let newpath = './uploads/' + req.body[key] + '-profile_picture.jpg';
+						renameFile(oldpath, newpath);
+						
+						let imagePath = './?image=' + req.body[key] + '-profile_picture.jpg';
+						user.profile_picture = imagePath;
+
+						user[key] = req.body[key];
                     } else {
                         user[key] = req.body[key];
                     }
@@ -153,9 +174,9 @@ router.put("/forgot-password",(req,res) =>{
 				user.save()
 					.catch(err => console.log(err));
 				
-				return res.json({message : "password berhasil diubah"});
+				return res.json({message : "password changed"});
             }else{
-                return res.status(400).json({message : 'tidak ada alamat email yang sesuai'});
+                return res.status(400).json({message : 'no account with this email address'});
             }
         })
 });
