@@ -1,0 +1,35 @@
+[{
+  "_id": {
+    "$oid": "5e7e086e76515f272c708c21"
+  },
+  "username": "misal",
+  "email": "misal@email.com",
+  "password": "$2a$10$tLYY5R5C16Nn/n6v3xTlbeBqSDmENEOUkRzUsrFV978DWuVw4jh02",
+  "birthdate": {
+    "$date": "2000-12-19T00:00:00Z"
+  },
+  "profile_picture": "./?image=misal-pp.jpg",
+  "occupation": "mahasisw",
+  "phone_number": "08138009000",
+  "created_at": {
+    "$date": "2020-03-27T14:06:38.290Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e7e0b1fdaf6b20017439123"
+  },
+  "username": "bismillah",
+  "email": "bismillah@email.com",
+  "password": "$2a$10$KpNfYvZilXTCqwzVQAluqOWzsd8vm9v31y.9qTRwxCZfrDIU0PXOa",
+  "birthdate": {
+    "$date": "2000-12-29T00:00:00Z"
+  },
+  "profile_picture": "./?image=bismillah-pp.jpg",
+  "occupation": "pekerja",
+  "phone_number": "081xxx04556",
+  "created_at": {
+    "$date": "2020-03-27T14:18:07.010Z"
+  },
+  "__v": 0
+}]

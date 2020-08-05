@@ -4,7 +4,7 @@ const isEmpty = require("../../validation/is-empty");
 
 router.get("",(req,res) =>{
 	if(isEmpty(req.query.image)){
-		return res.json({"message": "connect success"});
+		return res.json({"message": "connect successed"});
 	}
 	
 	let image = req.query.image;
